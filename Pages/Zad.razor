@@ -1,0 +1,15 @@
+@page "/{A:double}/{Txt1}/{B:double}/{Txt2}"
+
+<h3>Zadanie:</h3>
+@A @Txt1 @B @Txt2 
+@code {
+   [Parameter]
+public double A  { get; set; } = 0;
+  [Parameter]
+public double B  { get; set; } = 0;
+[Parameter]
+public string? Txt1  { get; set; } = string.Empty;
+[Parameter]
+public string? Txt2  { get; set; } = string.Empty;
+
+}

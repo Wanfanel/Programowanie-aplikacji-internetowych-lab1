@@ -1,0 +1,15 @@
+﻿@page "/sub/{A:double}/{B:double}"
+
+<h3>Sub</h3>
+@A - @B = @c
+@code {
+   [Parameter]
+public double A  { get; set; } = 0;
+  [Parameter]
+public double B  { get; set; } = 0;
+private double c = 0;
+
+  protected override void OnInitialized() {
+      c = A-B;
+  }
+}

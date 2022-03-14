@@ -1,0 +1,30 @@
+@page "/calculator"
+
+<h1>Calculator</h1>
+<input @bind="A"> <input @bind="B">
+<p role="status">Result: @C</p>
+
+<button class="btn btn-primary" @onclick="Add">+</button>
+<button class="btn btn-primary" @onclick="Sub">-</button>
+<button class="btn btn-primary" @onclick="Mul">*</button>
+<button class="btn btn-primary" @onclick="Div">/</button>
+<button class="btn btn-primary" @onclick="Pythagoras">Pythagoras</button>
+
+@code {
+    [Parameter]
+    public double A { get; set; } = 0;
+    [Parameter]
+    public double B { get; set; } = 0;
+    public double C { get; set; } = 0;
+
+    private void Add() => C = A + B;
+    private void Sub() => C = A - B;
+    private void Mul() => C = A * B;
+    private void Div()
+    {
+        if (B == 0)
+            return;
+        C = A / B;
+    }
+    private void Pythagoras() =>C = Math.Sqrt(A * A + B * B); 
+}

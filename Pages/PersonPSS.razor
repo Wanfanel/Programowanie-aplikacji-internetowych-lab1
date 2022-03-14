@@ -1,0 +1,55 @@
+@page "/personpss"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager NavigationManager
+
+
+<h3>Person in Proteted Sesion Storage</h3>
+
+<EditForm Model="@Person" OnValidSubmit="@HandleValidSubmit">
+  <DataAnnotationsValidator />
+    <ValidationSummary />
+<p>
+   <label> 
+       Name:
+    <InputText id="name" @bind-Value="@Person.Name"/>
+    </label>
+    </p>
+    <p>
+   <label>
+       Surname:
+<InputText id="surname" @bind-Value="@Person.Surname"/>
+    </label>
+    </p>
+<p>
+   <label>
+       PESEL:
+<InputText id="pesel" @bind-Value="@Person.Pesel"/>
+    </label>
+    </p>
+<p>
+   <label>
+       Email:
+<InputText id="email" @bind-Value="@Person.Email"/>
+    </label>
+    </p>
+<p>
+   <label>
+       Phone:
+<InputText id="phone" @bind-Value="@Person.Phone"/>
+    </label>
+    </p>
+ <button type="submit">Submit</button>
+
+
+</EditForm>
+
+
+@code{
+Data.Person Person {get;set;} = new();
+    private async Task HandleValidSubmit()
+    {
+            await ProtectedSessionStore.SetAsync("Person", Person);
+                NavigationManager.NavigateTo("/personinfo");
+    }
+}

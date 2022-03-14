@@ -1,0 +1,104 @@
+@page "/info"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<h3>Info</h3>
+<p><input @bind="KeyString"> <input @bind="ValueString">
+    <input type="date" id="myDate" name="sel_date" @bind="Date" />
+</p>
+<p>
+    <button class="btn btn-primary" @onclick="AddCookie">Add Cookie</button>
+</p>
+<p>Cookies:@cookies</p>
+<p>UserAgent: @userAgent</p>
+<p>Language: @userLanguage</p>
+<p>Host: @LocationHost </p>
+
+
+
+@code {
+
+    private MarkupString cookies = new("EMPTY");
+    private MarkupString userAgent = new("EMPTY");
+    private MarkupString LocationHost = new("EMPTY");
+    private MarkupString userLanguage = new("EMPTY");
+    private IJSObjectReference? module;
+    [Parameter]
+    public DateTime Date { get; set; } = DateTime.Now;
+    [Parameter]
+    public string? KeyString { get; set; }
+    [Parameter]
+    public string? ValueString { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //Task task;
+
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts.js");
+
+            await ReadCookies();
+            await ReadAgent();
+            await GetLocationHost();
+            await ReadUserLanguage();
+            StateHasChanged();
+
+        }
+
+    }
+
+    private async Task ReadCookies()
+    {
+        if (module != null)
+            cookies = new(await module.InvokeAsync<string>("ShowCookie"));
+        else
+            cookies = new("Error");
+    }
+
+    private async Task AddCookie()
+    {
+        if (KeyString != null && ValueString != null)
+        {
+            await AddCookie(KeyString, ValueString, Date);
+
+        }
+        await ReadCookies();
+    }
+    private async Task AddCookie(string key, string value, DateTime date)
+    {
+        if (module != null)
+            await module.InvokeVoidAsync("AddCookie", key, value, date.Year, date.Month - 1, date.Day);
+    }
+    private async Task ReadAgent()
+    {
+        if (module != null)
+            userAgent = new(await module.InvokeAsync<string>("GetUserAgent"));
+        else
+            userAgent = new("Error");
+
+    }
+    private async Task ReadUserLanguage()
+    {
+        if (module != null)
+            userLanguage = new(await module.InvokeAsync<string>("GetLanguage"));
+        else
+            userLanguage = new("Error");
+    }
+
+    private async Task GetLocationHost()
+    {
+        if (module != null)
+            LocationHost = new(await module.InvokeAsync<string>("GetHost"));
+
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+}

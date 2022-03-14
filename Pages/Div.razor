@@ -1,0 +1,16 @@
+@page "/div/{A:double}/{B:double}"
+
+<h3>Div</h3>
+@A : @B = @c
+@code {
+   [Parameter]
+public double A  { get; set; } = 0;
+  [Parameter]
+public double B  { get; set; } = 0;
+private double c = 0;
+
+  protected override void OnInitialized() {
+      if(A!=0)
+      c = A/B;
+  }
+}

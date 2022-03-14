@@ -1,0 +1,63 @@
+﻿@page "/person"
+@inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Numerics
+
+<h3>Person</h3>
+<p>
+    Name: @Name
+</p>
+<p>
+    Surname: @Surname
+</p>
+<p>
+    PESEL: @Pesel
+</p>
+<p>
+    Email: @Email
+</p>
+<p>
+    Telephone: @Phone
+</p>
+<p>
+    URI: @uri.ToString();
+</p>
+
+@code {
+    System.Uri uri= new("about:blank");
+    public string? Name { get; set; }
+
+    public string? Surname { get; set; }
+    public BigInteger? Pesel { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("name", out var name))
+        {
+            Name = name;
+        }
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("surname", out var surname))
+        {
+            Surname = surname;
+        }
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("pesel", out var peselString))
+        {
+            if (BigInteger.TryParse(peselString, out var pesel))
+            {
+                Pesel = pesel;
+            }
+        }
+                if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("email", out var email))
+        {
+            Email = email;
+        }
+                if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("phone", out var phone))
+        {
+            Phone = phone;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+@page "/personinfo"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<h3>Person info in Proteted Sesion Storage</h3>
+
+<p>
+    Name: @Person.Name
+</p>
+<p>
+    Surname: @Person.Surname
+</p>
+<p>
+    PESEL: @Person.Pesel
+</p>
+<p>
+    Email: @Person.Email
+</p>
+<p>
+    Telephone: @Person.Phone
+</p>
+
+
+@code {
+    Data.Person Person { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await ProtectedSessionStore.GetAsync<Data.Person>("Person");
+            if (result.Value != null)
+                Person = result.Value;
+            StateHasChanged();
+        }
+    }
+}
